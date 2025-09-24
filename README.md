@@ -54,7 +54,6 @@ Use the Linux in your CSE4001 container. If you are using macOS, you may use the
 - The variable's value in the child process is identical to that of the parent's value. However, each process has it's own copy of the variable, so changing the value in either process does not affect the other.
 ```cpp
 // Add your code or answer here. You can also add screenshots showing your program's execution.  
-  GNU nano 4.8                                                                        question1.c                                                                                  
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
