@@ -114,11 +114,30 @@ int main(void) {
 ![Outout of code above](question2.png)
 
 3. Write another program using `fork()`.The child process should print “hello”; the parent process should print “goodbye”. You should try to ensure that the child process always prints first; can you do this without calling `wait()` in the parent?
-
+- Yes, you can implement a delay with sleep(). However, this timing can be inaccurate and cause waiting longer than necessary.
 ```cpp
-// Add your code or answer here. You can also add screenshots showing your program's execution.  
-```
+include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
+int main(void) {
+    printf("PID (pid:%d)\n", (int) getpid());
+    int id = fork();
+
+    if (id < 0) { // id is negative; failed
+        fprintf(stderr, "Failed\n");
+        exit(1);
+    } else if (id == 0) { // is child
+        printf("hello\n");
+    } else { // is parent
+        sleep(1); // ensures that parent prints last
+        printf("goodbye\n");
+    }
+
+    return 0;
+}
+```
+![Outout of code above](question3.png)
 
 4. Write a program that calls `fork()` and then calls some form of `exec()` to run the program `/bin/ls`. See if you can try all of the variants of `exec()`, including (on Linux) `execl()`, `execle()`, `execlp()`, `execv()`, `execvp()`, and `execvpe()`. Why do you think there are so many variants of the same basic call?
 
