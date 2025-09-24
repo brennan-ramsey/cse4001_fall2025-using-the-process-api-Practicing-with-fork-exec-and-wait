@@ -116,7 +116,7 @@ int main(void) {
 3. Write another program using `fork()`.The child process should print “hello”; the parent process should print “goodbye”. You should try to ensure that the child process always prints first; can you do this without calling `wait()` in the parent?
 - Yes, you can implement a delay with sleep(). However, this timing can be inaccurate and cause waiting longer than necessary.
 ```cpp
-include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -148,8 +148,29 @@ int main(void) {
 5. Now write a program that uses `wait()` to wait for the child process to finish in the parent. What does `wait()` return? What happens if you use `wait()` in the child?
 
 ```cpp
-// Add your code or answer here. You can also add screenshots showing your program's execution.  
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+int main(void) {
+    printf("PID (pid:%d)\n", (int) getpid());
+    int id = fork();
+
+    if (id < 0) { // id is negative; failed
+        fprintf(stderr, "Failed\n");
+        exit(1);
+    } else if (id == 0) { // is child
+        printf("I am child. Hello!\n");
+    } else { // is parent
+        wait(NULL);
+        printf("I am parent. Goodbye!\n");
+    }
+
+    return 0;
+}
 ```
+![Screenshot of above code](question5.png)
 
 6. Write a slight modification of the previous program, this time using `waitpid()` instead of `wait()`. When would `waitpid()` be useful?
 
