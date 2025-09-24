@@ -52,8 +52,7 @@ Use the Linux in your CSE4001 container. If you are using macOS, you may use the
 
 
 - The variable's value in the child process is identical to that of the parent's value. However, each process has it's own copy of the variable, so changing the value in either process does not affect the other.
-```cpp
-// Add your code or answer here. You can also add screenshots showing your program's execution.  
+```cpp  
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -80,10 +79,39 @@ int main(void) {
 ![Outout of code above](question1.png)
 
 2. Write a program that opens a file (with the `open()` system call) and then calls `fork()` to create a new process. Can both the child and parent access the file descriptor returned by `open()`? What happens when they are writing to the file concurrently, i.e., at the same time?
-
+- Yes, both the parent and child can access the file descriptor when it is declared before forking.
+- They can also write to the same file concurrently. The order of written data depends on the order of execution between these processes.
 ```cpp
-// Add your code or answer here. You can also add screenshots showing your program's execution.  
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <fcntl.h>
+
+int main(void) {
+    printf("PID (pid:%d)\n", (int) getpid());
+    int file = open("words.txt", O_RDWR);
+    char *start = "Hello world!\n";
+    write(file, start, strlen(start));
+    int id = fork();
+
+    if (id < 0) { // id is negative; failed
+        fprintf(stderr, "Failed\n");
+        exit(1);
+    } else if (id == 0) { // is child
+        char *text = "Child!\n";
+        write(file, text, strlen(text));
+        printf("Child (pid:%d)\n", (int) getpid());
+    } else { // is parent
+        char *text = "Parent!\n";
+        write(file, text, strlen(text));
+        printf("Parent of %d (pid:%d)\n", id, (int) getpid());
+    }
+
+    return 0;
+}
 ```
+![Outout of code above](question2.png)
 
 3. Write another program using `fork()`.The child process should print “hello”; the parent process should print “goodbye”. You should try to ensure that the child process always prints first; can you do this without calling `wait()` in the parent?
 
