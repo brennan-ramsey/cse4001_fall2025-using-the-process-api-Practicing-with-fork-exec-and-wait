@@ -173,10 +173,31 @@ int main(void) {
 ![Screenshot of above code](question5.png)
 
 6. Write a slight modification of the previous program, this time using `waitpid()` instead of `wait()`. When would `waitpid()` be useful?
-
+- waitpit() would be useful when there are multiple active children, of which there is only one child to wait for.
 ```cpp
-// Add your code or answer here. You can also add screenshots showing your program's execution.  
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+int main(void) {
+    printf("PID (pid:%d)\n", (int) getpid());
+    int id = fork();
+
+    if (id < 0) { // id is negative; failed
+        fprintf(stderr, "Failed\n");
+        exit(1);
+    } else if (id == 0) { // is child
+        printf("I am child. Hello!\n");
+    } else { // is parent
+        waitpid(0, NULL, 0);
+        printf("I am parent. Goodbye!\n");
+    }
+
+    return 0;
+}
 ```
+![Screenshot of above code](question6.png)
 
 7. Write a program that creates a child process, and then in the child closes standard output (`STDOUT FILENO`). What happens if the child calls `printf()` to print some output after closing the descriptor?
 
