@@ -51,10 +51,34 @@ Use the Linux in your CSE4001 container. If you are using macOS, you may use the
 1. Write a program that calls `fork()`. Before calling `fork()`, have the main process access a variable (e.g., x) and set its value to something (e.g., 100). What value is the variable in the child process? What happens to the variable when both the child and parent change the value of x?
 
 
+- The variable's value in the child process is identical to that of the parent's value. However, each process has it's own copy of the variable, so changing the value in either process does not affect the other.
 ```cpp
 // Add your code or answer here. You can also add screenshots showing your program's execution.  
-```
+  GNU nano 4.8                                                                        question1.c                                                                                  
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
+int main(void) {
+    printf("PID (pid:%d)\n", (int) getpid());
+    int x = 10;
+    int id = fork();
+
+    if (id < 0) { // id is negative; failed
+        fprintf(stderr, "Failed\n");
+        exit(1);
+    } else if (id == 0) { // is child
+        x = x+10; // x = 20
+        printf("Child (pid:%d) (x:%d)\n", (int) getpid(), x);
+    } else { // is parent
+	x = x-5; // x = 5
+        printf("Parent of %d (pid:%d) (x:%d)\n", id, (int) getpid(), x);
+    }
+
+    return 0;
+}
+```
+![Outout of code above](question1.png)
 
 2. Write a program that opens a file (with the `open()` system call) and then calls `fork()` to create a new process. Can both the child and parent access the file descriptor returned by `open()`? What happens when they are writing to the file concurrently, i.e., at the same time?
 
