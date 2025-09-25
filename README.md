@@ -140,13 +140,32 @@ int main(void) {
 ![Outout of code above](question3.png)
 
 4. Write a program that calls `fork()` and then calls some form of `exec()` to run the program `/bin/ls`. See if you can try all of the variants of `exec()`, including (on Linux) `execl()`, `execle()`, `execlp()`, `execv()`, `execvp()`, and `execvpe()`. Why do you think there are so many variants of the same basic call?
-
 ```cpp
-// Add your code or answer here. You can also add screenshots showing your program's execution.  
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main(void) {
+    printf("PID (pid:%d)\n", (int) getpid());
+    int id = fork();
+
+    if (id < 0) { // id is negative; failed
+        fprintf(stderr, "Failed\n");
+        exit(1);
+    } else if (id == 0) { // is child
+        printf("hello\n");
+        execl("/bin/ls", "ls", "-l", (char *)NULL);
+    } else { // is parent
+        printf("goodbye\n");
+    }
+
+    return 0;
+
 ```
+![Outout of code above](question4.png)
 
 5. Now write a program that uses `wait()` to wait for the child process to finish in the parent. What does `wait()` return? What happens if you use `wait()` in the child?
-
+- wait() returns the PID of the completed child process.
 ```cpp
 #include <stdio.h>
 #include <stdlib.h>
@@ -173,7 +192,7 @@ int main(void) {
 ![Screenshot of above code](question5.png)
 
 6. Write a slight modification of the previous program, this time using `waitpid()` instead of `wait()`. When would `waitpid()` be useful?
-- waitpit() would be useful when there are multiple active children, of which there is only one child to wait for.
+- waitpid() would be useful when there are multiple active children, of which there is only one child to wait for.
 ```cpp
 #include <stdio.h>
 #include <stdlib.h>
@@ -200,8 +219,28 @@ int main(void) {
 ![Screenshot of above code](question6.png)
 
 7. Write a program that creates a child process, and then in the child closes standard output (`STDOUT FILENO`). What happens if the child calls `printf()` to print some output after closing the descriptor?
-
+- Any calls of printf() after closing standard output fail, and do not print anything.
 ```cpp
-// Add your code or answer here. You can also add screenshots showing your program's execution.  
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main(void) {
+    printf("PID (pid:%d)\n", (int) getpid());
+    int id = fork();
+
+    if (id < 0) { // id is negative; failed
+        fprintf(stderr, "Failed\n");
+        exit(1);
+    } else if (id == 0) { // is child
+        printf("hello\n");
+    } else { // is parent
+        close(STDOUT_FILENO);
+        printf("goodbye\n");
+    }
+
+    return 0;
+}
 ```
+![Outout of code above](question7.png)
 
